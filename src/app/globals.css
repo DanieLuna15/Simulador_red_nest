@@ -43,3 +43,30 @@ body {
 .react-flow__edge-path {
   transition: stroke-width 0.2s ease, stroke 0.2s ease;
 }
+
+/* React Flow Capas de Profundidad: Zonas (Fondo) < Cables/Animaciones PDU < Equipos */
+.react-flow__edges {
+  z-index: 5 !important;
+}
+
+.react-flow__edge {
+  pointer-events: all;
+}
+
+/* Las Áreas / Zonas por defecto van físicamente DEBAJO de todos los cables y animaciones */
+.react-flow__node-zoneNode {
+  z-index: 1 !important;
+}
+
+.react-flow__node-zoneNode.zone-foreground {
+  z-index: 30 !important;
+}
+
+/* Todos los equipos físicos (Routers, Switches, PCs, Servidores) se sitúan sobre los cables */
+.react-flow__node:not(.react-flow__node-zoneNode) {
+  z-index: 10 !important;
+}
+
+.react-flow__node.selected {
+  z-index: 20 !important;
+}

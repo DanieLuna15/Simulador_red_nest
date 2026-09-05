@@ -1,44 +1,81 @@
 export type DeviceType =
-  | 'switch-16'
-  | 'switch-24'
+  // Switches & Hubs
   | 'switch-48'
+  | 'switch-24'
+  | 'switch-16'
+  | 'switch-8'
+  | 'hub-5'
+  // Routers & Perímetro
   | 'router'
+  | 'firewall'
+  | 'ont'
+  | 'cloud'
+  // Servidores
+  | 'server-web'
+  | 'server-dns'
+  | 'server-db'
+  | 'server-nas'
+  // Terminales
   | 'pc'
   | 'laptop'
-  | 'server'
+  | 'smartphone'
   | 'phone'
+  | 'printer'
+  | 'camera'
   | 'ap'
+  | 'iot'
+  // Anotaciones
   | 'text-note'
   | 'zone';
 
-export type CableType = 'utp-cat6' | 'fiber-sfp' | 'auto';
+export type CableType =
+  | 'auto'
+  | 'utp-cat6'
+  | 'utp-crossover'
+  | 'fiber-sfp'
+  | 'wireless'
+  | 'serial-wan';
 
-export interface SwitchNodeData {
+export interface BaseDeviceData {
   label: string;
-  deviceType: 'switch-16' | 'switch-24' | 'switch-48';
+  deviceType: DeviceType;
+  isPoweredOn?: boolean;
+  ip?: string;
+  subnetMask?: string;
+  gateway?: string;
+  dnsServer?: string;
+  dhcpEnabled?: boolean;
+  mac?: string;
+  vlan?: string;
+  model?: string;
+  isIsolated?: boolean;
+}
+
+export interface SwitchNodeData extends BaseDeviceData {
+  deviceType: 'switch-48' | 'switch-24' | 'switch-16' | 'switch-8' | 'hub-5';
   maxPorts: number;
-  ip: string;
-  vlan: string;
-  model: string;
-  isIsolated?: boolean;
 }
 
-export interface RouterNodeData {
-  label: string;
-  deviceType: 'router';
-  ip: string;
-  gateway: string;
-  model: string;
-  isIsolated?: boolean;
+export interface RouterNodeData extends BaseDeviceData {
+  deviceType: 'router' | 'firewall' | 'ont' | 'cloud';
+  firewallRulesCount?: number;
 }
 
-export interface WorkstationNodeData {
-  label: string;
-  deviceType: 'pc' | 'laptop' | 'server' | 'phone' | 'ap';
-  ip: string;
-  mac: string;
-  vlan: string;
-  status: 'online' | 'offline' | 'transmitting';
+export interface ServerNodeData extends BaseDeviceData {
+  deviceType: 'server-web' | 'server-dns' | 'server-db' | 'server-nas';
+  webContent?: string;
+  dhcpPool?: {
+    startIp: string;
+    endIp: string;
+    subnetMask: string;
+    gateway: string;
+  };
+  dnsRecords?: Record<string, string>;
+}
+
+export interface WorkstationNodeData extends BaseDeviceData {
+  deviceType: 'pc' | 'laptop' | 'smartphone' | 'phone' | 'printer' | 'camera' | 'ap' | 'iot';
+  status?: 'online' | 'offline' | 'transmitting';
 }
 
 export interface TextNoteNodeData {
@@ -53,6 +90,7 @@ export interface ZoneNodeData {
   color: string;
   width: number;
   height: number;
+  isBackground?: boolean;
 }
 
 export interface CableEdgeData {

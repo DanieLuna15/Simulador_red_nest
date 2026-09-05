@@ -41,6 +41,11 @@ export const NetworkFlow: React.FC = () => {
   const selectedNodeId = useNetworkStore((s) => s.selectedNodeId);
   const removeNode = useNetworkStore((s) => s.removeNode);
 
+  const isEnvelopeMode = useNetworkStore((s) => s.isEnvelopeMode);
+  const handleNodeClickEnvelope = useNetworkStore((s) => s.handleNodeClickEnvelope);
+  const activePingBanner = useNetworkStore((s) => s.activePingBanner);
+  const setEnvelopeMode = useNetworkStore((s) => s.setEnvelopeMode);
+
   // Escuchar atajos globales: Ctrl+Z, Ctrl+Y, Delete
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -74,7 +79,23 @@ export const NetworkFlow: React.FC = () => {
   }, [selectedNodeId, removeNode]);
 
   return (
-    <div className="w-full h-full bg-[#070b14] relative">
+    <div className={`w-full h-full bg-[#070b14] relative ${isEnvelopeMode ? 'cursor-crosshair' : ''}`}>
+      {/* Banner flotante de simulación de paquetes o Modo Sobre */}
+      {activePingBanner && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 px-5 py-2.5 rounded-full bg-slate-900/95 border-2 border-cyan-400 text-cyan-300 font-bold text-xs shadow-2xl shadow-cyan-500/30 flex items-center gap-3 backdrop-blur-md animate-in slide-in-from-top-4 duration-200">
+          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+          <span>{activePingBanner}</span>
+          {isEnvelopeMode && (
+            <button
+              onClick={() => setEnvelopeMode(false)}
+              className="px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[10px] hover:bg-rose-500/40 transition-colors"
+            >
+              Cancelar
+            </button>
+          )}
+        </div>
+      )}
+
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -83,7 +104,13 @@ export const NetworkFlow: React.FC = () => {
         onConnect={onConnect}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
-        onNodeClick={(_, node) => setSelectedNodeId(node.id)}
+        onNodeClick={(_, node) => {
+          if (isEnvelopeMode) {
+            handleNodeClickEnvelope(node.id);
+          } else {
+            setSelectedNodeId(node.id);
+          }
+        }}
         onPaneClick={() => setSelectedNodeId(null)}
         fitView
         fitViewOptions={{ padding: 0.15 }}
