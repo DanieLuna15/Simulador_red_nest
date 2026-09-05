@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+:root {
+  --background: #070b14;
+  --foreground: #ededed;
+}
+
+body {
+  background: #070b14;
+  color: #ededed;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Custom sleek scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #090e1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* React Flow customizations */
+.react-flow__handle {
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.react-flow__handle:hover {
+  transform: scale(1.4);
+}
+
+.react-flow__edge-path {
+  transition: stroke-width 0.2s ease, stroke 0.2s ease;
+}
